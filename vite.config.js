@@ -7,8 +7,9 @@ export default defineConfig({
     react({
       babel: {
         plugins: [['babel-plugin-react-compiler']],
-        base: '/Google-clone-/',
       },
     }),
   ],
+  base: '/Google-clone-/', // ✅ move base here (outside babel)
 })
+
