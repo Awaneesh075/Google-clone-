@@ -1,7 +1,12 @@
-name: Deploy app
+name: Deploy Vite React app to GitHub Pages
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - closed
     branches:
       - main
 
@@ -16,6 +21,7 @@ concurrency:
 
 jobs:
   build-and-deploy:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -43,7 +49,7 @@ jobs:
       - name: Upload build output
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist  
+          path: ./dist
 
       - name: Deploy to GitHub Pages
         id: deployment
