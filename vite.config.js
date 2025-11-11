@@ -7,8 +7,8 @@ export default defineConfig({
     react({
       babel: {
         plugins: [['babel-plugin-react-compiler']],
-        base: '/Weather-Web-Appliacton/',
       },
     }),
   ],
+  base: '/Google-clone-/', // ✅ move base here (outside babel)
 })
