@@ -50,7 +50,7 @@ html {
 }
 
 .app__nav button {
-    background-color: #f1f1f1;
+    background-color: #red;
     border: none;
     padding: 8px 12px;
     border-radius: 4px;
