@@ -68,7 +68,13 @@ function TodoApp() {
                         onClick={() => toggleChecked(index)}
                     >
                         {item}
-                        <span className="close" onClick={() => removeItem(index)}>&times;</span>
+                        <span className="close"
+                            onClick={(e) => {
+                                  e.stopPropagation();
+                                removeItem(index)
+                            }}
+                        >&times;
+                        </span>
                     </li>
                 ))}
             </ul>
