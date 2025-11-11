@@ -2,10 +2,10 @@ import './App.css'
 function App() {
     return (
         <div className="app">
-            {<header className="app__header">
+            {/* {<header className="app__header">
                 <NavLink to="/todo" className="nav-link">Todo</NavLink>
                 <button type="button" id="home">Home</button>
-            </header>}
+            </header>} */}
 
 
 
