@@ -1,0 +1,57 @@
+name: CI + CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      # 🧩 Step 1: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 🧩 Step 2: Setup Node
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      # 🧩 Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # 🧩 Step 4: Lint (optional but good)
+      - name: Run ESLint
+        run: npm run lint || echo "Lint warnings ignored"
+
+      # 🧩 Step 5: Build your Vite React app
+      - name: Build app
+        run: npm run build
+
+      # 🧩 Step 6: Setup SSH for secure deployment
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.GCP_HOST }} >> ~/.ssh/known_hosts
+
+      # 🧩 Step 7: Deploy build output to your GCP VM
+      - name: Copy dist folder to GCP VM
+        run: |
+          rsync -avz --delete ./dist/ ${{ secrets.GCP_USER }}@${{ secrets.GCP_HOST }}:/home/${{ secrets.GCP_USER }}/google-clone/dist/
+
+      # 🧩 Step 8: Restart the app on the VM
+      - name: Restart app on GCP
+        run: |
+          ssh ${{ secrets.GCP_USER }}@${{ secrets.GCP_HOST }} "cd /home/${{ secrets.GCP_USER }}/google-clone && pm2 restart google-clone || pm2 start npm --name 'google-clone' -- start"
