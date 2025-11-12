@@ -10,6 +10,6 @@ export default defineConfig({
       },
     }),
   ],
-  base: './Google-clone-/', // ✅ move base here (outside babel)
+  base: './', // ✅ move base here (outside babel)
 })
 
